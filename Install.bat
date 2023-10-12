@@ -1,16 +1,41 @@
 @echo off
 chcp 65001 > nul
-REM Überprüfen der Administratorrechte
->nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
-REM Überprüfen der Administratorrechte
-if %errorlevel% neq 0 (
-    echo Das Skript erfordert Administratorrechte.
-    echo Bitte starte das Skript als Administrator.
-    pause
-    exit /b
-)
-
 setlocal enabledelayedexpansion
+for /F %%z in ('echo prompt $E ^| cmd') do (
+  set "ESC=%%z"
+)
+set "delay=1"
+REM Variable to track if line 17 is displayed
+set "art17Displayed="
+set "line7Displayed="
+set "win=winget"
+set "winGet_Pe=%ProgramFiles%\WindowsApps\Microsoft.DesktopAppInstaller_*"
+set "pws_e=powershell.exe"
+set "ExPy_Bs_Cd=-ExecutionPolicy Bypass -Command"
+set "sleep=timeout /t 2 /nobreak > nul"
+set "log=False"
+set "dt_Co=!ESC![0m"
+set "ef_bo=!ESC![1m"
+set "ef_it=!ESC![3m"
+set "rd_Co_f=!ESC![31m"
+set "gr_Co_f=!ESC![32m"
+set "ye_Co_f=!ESC![33m"
+set "bl_Co_f=!ESC![34m"
+set "ma_Co_f=!ESC![35m"
+set "cy_Co_f=!ESC![36m"
+
+
+@REM REM Überprüfen der Administratorrechte
+@REM >nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
+@REM REM Überprüfen der Administratorrechte
+@REM if %errorlevel% neq 0 (
+@REM     echo Das Skript erfordert Administratorrechte.
+@REM     echo Bitte starte das Skript als Administrator.
+@REM     pause
+@REM     exit /b
+@REM )
+
+
 REM Deutsch
 set "D[1]=Hallo!"
 set "D[2]=Das ist mein Installation-Script"
@@ -83,7 +108,7 @@ set "R[10]=Подождите, программа запускается..."
 set "R[11]=Вы хотите запустить только что установленный код VS?"
 set "R[12]=Поздравляем, все установлено и настроено правильно."
 set "R[13]=VS Code не был установлен"
-set "R[14]=Продолжить с улучшениями для VS Code..."
+set "R[14]=Продолжить c улучшениями для VS Code..."
 set "R[15]=VS Code установлен"
 set "R[16]=Установка кода VS..."
 set "R[17]=Удалить установочный пакет WinGet"
@@ -99,7 +124,7 @@ set "R[26]=Итак, продолжим..."
 set "R[27]=Установка расширений VS Code..."
 
 REM Japanisch
-set "J[1]=こんにちは!」を設定します。"
+set "J[1]=こんにちは!"
 set "J[2]=これは私のインストール スクリプトです"
 set "J[3]=実行するものを選択してください。"
 set "J[4]=拡張機能付きの VS Code をインストールする"
@@ -157,44 +182,31 @@ set "I[26]=Ini berlanjut..."
 set "I[27]=Memasang Ekstensi Kode VS..."
 
 set /p lang=D-Sprache;E-Language;R-Язык;J-言語;I-Bahasa (D, E, R, J, I)^>
-if %lang% == J (
+if /i %lang% == J (
   chcp 932 > nul
 ) else (
   chcp 65001 > nul
 )
 cls
 
-REM Delay between displaying each line (in milliseconds)
-set "delay=1"
-REM Variable to track if line 17 is displayed
-set "line17Displayed="
-set "win=winget"
-set "winGet_Pe=%ProgramFiles%\WindowsApps\Microsoft.DesktopAppInstaller_*"
-set "pws_e=powershell.exe"
-set "ExPy_Bs_Cd=-ExecutionPolicy Bypass -Command"
-
 :welcome
-color 3
-setlocal enabledelayedexpansion
-REM Definition der Ausgabezeilen
-set "art[1]=      ___  _____                                                   _=====_                               _=====_"
-set "art[2]=    .'/,-Y'     '~-.                                              / _____ \                             / _____ \"
-set "art[3]=    l.Y             \                                           +.-'_____'-.--------------------------.-' _____'-.+"
-set "art[4]=    /\               _\_       Script: Package-Installer       /   |     |  '.        S O N Y        .'  |  _  |   \"
-set "art[5]=   i            ___/'   '\         Author: N.Kovalev          / ___| /|\ |___ \                     / ___| /_\ |___ \"
-set "art[6]=   |          /'   '\   o |        Version: Alpha 0.0.1      / |      |      | ;   __          _   ; | _         _ | ;"
-set "art[7]=   l         |     o |__./                                   | | <---   ---> | |  |__|        |_:> | ||_|       (_)| |"
-set "art[8]=    \ _  _    \.___./    '~\                                 | |___   |   ___| ; SELECT      START ; |___       ___|  ;"
-set "art[9]=     X \/ \            ___./                                 |\    | \|/ |    /   _     ___      _   \    | (X) |    /|"
-set "art[10]=    ( \ ___.   _..--~~'   ~`-.                              | \   |_____|  .' ,'" "', |___|  ,'" "', '.  |_____|  .' |"
-set "art[11]=     ` Z,--   /               \                             |  '-.______.-'  /       \ANALOG/       \  '-._____.-'   |"
-set "art[12]=       \__.  (   /       ______)                            |                |       |------|       |                |"
-set "art[13]=         \   l  /-----~~' /                                 |               /\       /      \       /\               |"
-set "art[14]=          Y   \          /                                  |              /  '.___.'        '.___.'  \              |"
-set "art[15]=          |   \x_______.                                    |             /                            \             |"
-set "art[16]=          |           \                                      \           /                              \           /"
-set "art[17]=          j            Y                                       \________/                                \_________/"
-
+set "art[1]=      %ye_Co_f%___  _____                                        "
+set "art[2]=    %ye_Co_f%.'/,-Y'     '~-.                                    "
+set "art[3]=    %ye_Co_f%l.Y             \                                   "
+set "art[4]=    %ye_Co_f%/\               _\_       %ma_Co_f%Script: Package-Installer%dt_Co%"
+set "art[5]=   %ye_Co_f%i            ___/'   '\         %gr_Co_f%Author: %ESC%[1;36mN.Kovalev%dt_Co%    "
+set "art[6]=   %ye_Co_f%|          /'   '\   %dt_Co%o %ye_Co_f%|        %gr_Co_f%Version: Alpha 0.0.3%dt_Co% "
+set "art[7]=   %ye_Co_f%l         |     %dt_Co%o %ye_Co_f%|__./                              "
+set "art[8]=    %ye_Co_f%\ _  _    \.___./    '~\                            "
+set "art[9]=     %ye_Co_f%X \/ \            ___./                            "
+set "art[10]=    %ye_Co_f%( \ ___.   %ESC%[38;2;255;218;186m_..--~~'   ~`-.                         "
+set "art[11]=     %ye_Co_f%` Z,--   %ESC%[38;2;255;218;186m/               \                        "
+set "art[12]=       %ye_Co_f%\__.  %ESC%[38;2;255;218;186m(   %dt_Co%/       ______%ESC%[38;2;255;218;186m)                       "
+set "art[13]=         %ye_Co_f%\   %ESC%[38;2;255;218;186ml  %dt_Co%/-----~~' %ESC%[38;2;255;218;186m/                            "
+set "art[14]=          %ye_Co_f%Y   %ESC%[38;2;255;218;186m\          /                             "
+set "art[15]=          %ye_Co_f%|   %ESC%[38;2;255;218;186m\x_______.                               "
+set "art[16]=          %ye_Co_f%|           \                                "
+set "art[17]=          %ye_Co_f%j            Y%dt_Co%                               "
 
 REM Function to display the ASCII art line by line
 :DisplayArt
@@ -202,49 +214,36 @@ cls
 for /L %%i in (1,1,17) do (
     echo !art[%%i]!
     ping -n %delay% 127.0.0.1 > nul
-
     REM Check if line 17 is displayed and exit the loop
-    if "%%i"=="17" set "line17Displayed=yes" && goto :CheckLine17
+    if "%%i"=="17" set "art17Displayed=yes" && goto :CheckLine17
 )
 goto :DisplayArt
-
 REM Check if line 17 is displayed and stop the script
 :CheckLine17
-if defined line17Displayed (
+if defined art17Displayed (
   goto sR
 ) else (
     goto :DisplayArt
 )
 
-
-
-
-
-
-REM echo:      ___  _____                                                   _=====_                               _=====_
-REM echo:    .'/,-Y'     '~-.                                              / _____ \                             / _____ \
-REM echo:    l.Y             ^.                                           +.-'_____'-.--------------------------.-' _____'-.+
-REM echo:    /\               _\_       Script: Package-Installer       /   ^|     ^|  '.        S O N Y        .'  ^|  _  ^|   \
-REM echo:   i            ___/'   '\         Author: N.Kovalev          / ___^| /^|\ ^|___ \                     / ___^| /_\ ^|___ \
-REM echo:   ^|          /'   '\   o ^|        Version: Alpha 0.0.1      / ^|      ^|      ^| ;   __          _   ; ^| _         _ ^| ;
-REM echo:   l         ^|     o ^|__./                                   ^| ^| ^<---   ---^> ^| ^|  ^|__^|        ^|_:^> ^| ^|^|_^|       (_)^| ^|
-REM echo:    \ _  _    \.___./    '~\                                 ^| ^|___   ^|   ___^| ; SELECT      ^START ; ^|___       ___^| ;
-REM echo:     X \/ \            ___./                                 ^|\    ^| \^|/ ^|    /  _     ___      _   \    ^| (X) ^|    /^|
-REM echo:    ( \ ___.   _..--~~'   ~`-.                               ^| \   ^|_____^|  .','" "', ^|___^|  ,'" "', '.  ^|_____^|  .' ^|
-REM echo:     ` Z,--   /               \                              ^|  '-.______.-' /       \ANALOG/       \  '-._____.-'   ^|
-REM echo:       \__.  (   /       ______)                             ^|               ^|       ^|------^|       ^|                ^|
-REM echo:         \   l  /-----~~' /                                  ^|              /\       /      \       /\               ^|
-REM echo:          Y   \          /                                   ^|             /  '.___.'        '.___.'  \              ^|
-REM echo:          ^|   \x_______.                                     ^|            /                            \             ^|
-REM echo:          ^|           \                                       \          /                              \           /
-REM echo:          j            Y                                       \________/                                \_________/  
-REM goto start
-
-
-
-
-
-
+@REM echo:      ___  _____                                                   _=====_                               _=====_
+@REM echo:    .'/,-Y'     '~-.                                              / _____ \                             / _____ \
+@REM echo:    l.Y             ^.                                           +.-'_____'-.--------------------------.-' _____'-.+
+@REM echo:    /\               _\_       Script: Package-Installer       /   ^|     ^|  '.        S O N Y        .'  ^|  _  ^|   \
+@REM echo:   i            ___/'   '\         Author: N.Kovalev          / ___^| /^|\ ^|___ \                     / ___^| /_\ ^|___ \
+@REM echo:   ^|          /'   '\   o ^|        Version: Alpha 0.0.1      / ^|      ^|      ^| ;   __          _   ; ^| _         _ ^| ;
+@REM echo:   l         ^|     o ^|__./                                   ^| ^| ^<---   ---^> ^| ^|  ^|__^|        ^|_:^> ^| ^|^|_^|       (_)^| ^|
+@REM echo:    \ _  _    \.___./    '~\                                 ^| ^|___   ^|   ___^| ; SELECT      ^START ; ^|___       ___^| ;
+@REM echo:     X \/ \            ___./                                 ^|\    ^| \^|/ ^|    /  _     ___      _   \    ^| (X) ^|    /^|
+@REM echo:    ( \ ___.   _..--~~'   ~`-.                               ^| \   ^|_____^|  .','" "', ^|___^|  ,'" "', '.  ^|_____^|  .' ^|
+@REM echo:     ` Z,--   /               \                              ^|  '-.______.-' /       \ANALOG/       \  '-._____.-'   ^|
+@REM echo:       \__.  (   /       ______)                             ^|               ^|       ^|------^|       ^|                ^|
+@REM echo:         \   l  /-----~~' /                                  ^|              /\       /      \       /\               ^|
+@REM echo:          Y   \          /                                   ^|             /  '.___.'        '.___.'  \              ^|
+@REM echo:          ^|   \x_______.                                     ^|            /                            \             ^|
+@REM echo:          ^|           \                                       \          /                              \           /
+@REM echo:          j            Y                                       \________/                                \_________/  
+@REM goto start
 pause
 :sR
 setlocal enabledelayedexpansion
@@ -254,26 +253,34 @@ echo !%lang%[2]!
 echo !%lang%[3]!
 echo ---------------------------------------------------------------------------------------------------------------------------
 echo:
-echo [1] - !%lang%[4]!
-echo [2] - !%lang%[5]!
-echo [3] - !%lang%[6]!                        ^< Unavailable
-echo [4] - !%lang%[7]!
+echo %gr_Co_f%[1]%dt_Co% - !%lang%[4]!
+echo %gr_Co_f%[2]%dt_Co% - !%lang%[5]!
+echo %gr_Co_f%[3]%dt_Co% - !%lang%[6]!                        ^< Unavailable
+echo %gr_Co_f%[4]%dt_Co% - !%lang%[]!                       ^< Unavailable
+echo %gr_Co_f%[5]%dt_Co% - !%lang%[]!                       ^< Unavailable
+echo %gr_Co_f%[6]%dt_Co% - !%lang%[7]!
 echo:
 echo:
-choice /c 1234 /n
+choice /c 123456 /n
 set "option=%errorlevel%"
 echo:
-if "%option%" == "1" (
-  cls
-  echo Bitte warten der Prozess ist aktiviert...
-  goto winget
-) else if "%option%" == "2" (
+if %option% == 1 (
   cls
   goto winget
-@REM ) else if "%option%" == "3" (
-@REM   cls
-@REM   goto nwpg ::NewPrograms
-) else if "%option%" == "4" (
+) else if %option% == 2 (
+  cls
+  goto winget
+) else if %option% == 3 (
+  cls
+  pause
+) else if %option% == 4 (
+  cls
+  goto w_m_i_c
+) else if %option% == 5 (
+  cls
+  goto php_in
+) else if %option% == 6 (
+  cls
   goto stop
 ) else (
   cls
@@ -286,17 +293,43 @@ if "%option%" == "1" (
 
 :winget
 if exist "%winGet_Pe%" (
-  echo WinGet found, skipping installation.
-  timeout /t 2 /nobreak > nul
+  echo %gr_Co_f%WinGet found, skipping installation.%dt_Co%
+  %sleep%
   if %option% == 1 (
-    goto vs
+    echo !%lang%[17]!
+    del "C:\Users\%username%\WinGet.msixbundle"
+    cls
+    echo !%lang%[16]!
+    %win% install --id=Microsoft.VisualStudioCode -e
+    echo !%lang%[26]!
+    %sleep%
+    if exist "C:\Users\%username%\AppData\Local\Programs\Microsoft VS Code\Code.exe" (
+      echo !%lang%[15]!
+      echo:
+      echo !%lang%[14]!
+      %sleep%
+      goto vs_exten
+    ) else (
+      echo !%lang%[13]!
+      echo:
+      echo Error_Code: "0x6001a2"
+      goto error
+    )
   ) else if %option% == 2 (
-    goto wingetUpdate
+    %win% list
+    echo:
+    echo:
+    set /p continue=!%lang%[19]! !%lang%[24]!
+    if /i "%continue%" neq "y" goto stop
+      %win% update --all
+      echo !%lang%[18]!
+      pause > nul
+    exit
   ) else if %option% == 3 (
     goto ::::::::::::::::::::::::::::::::
   )
 ) else (
-  echo WinGet not found, installing...
+  echo %rd_Co_f%WinGet not found, installing...%dt_Co%
   timeout /t 2 /nobreak
   %pws_e% %ExPy_Bs_Cd% "Invoke-WebRequest -Uri https://github.com/microsoft/winget-cli/releases/latest/download/Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle -OutFile C:\Users\%username%\WinGet.msixbundle"
   %pws_e% %ExPy_Bs_Cd% "Add-AppxPackage C:\Users\%username%\WinGet.msixbundle"
@@ -305,82 +338,7 @@ if exist "%winGet_Pe%" (
     Install.bat > log.txt 2>&1 || start cmd /k "type log.txt && pause"
     goto error
   )
-)
-timeout /t 2 /nobreak
-if %option% == 1 (
-    goto vs
-) else if %option% == 2 (
-    goto winget_update
-)
-
-:wingetUpdate
-%win% list
-echo:
-echo:
-set /p continue=!%lang%[19]! !%lang%[24]!
-if /i "%continue%" neq "j" goto stop
-%win% update --all
-echo !%lang%[18]!
-pause > nul
-exit
-
-
-
-
-
-
-
-
-@REM :nwpg
-@REM for /l %%f in (0 1 100) do (
-@REM   call :drawProgressBar %%f "Loading..."
-@REM )
-@REM for /l %%f in (100 1 100) do (
-@REM   echo.
-@REM   echo Finish
-@REM   pause > nul
-@REM )
-
-@REM rem Clean all after use
-@REM call :finalizeProgressBar 1
-
-@REM exit /b
-
-@REM pause > nul
-@REM exit
-
-
-
-
-
-
-
-
-
-
-
-:vs
-echo !%lang%[17]!
-del "C:\Users\%username%\WinGet.msixbundle"
-cls
-echo !%lang%[16]!
-%win% install --id=Microsoft.VisualStudioCode -e
-echo !%lang%[26]!
-timeout /t 2 /nobreak > nul
-goto vs_check
-
-:vs_check
-if exist "C:\Users\%username%\AppData\Local\Programs\Microsoft VS Code\Code.exe" (
-  echo !%lang%[15]!
-  echo:
-  echo !%lang%[14]!
-  timeout /t 2 /nobreak > nul
-  goto vs_exten
-) else (
-  echo !%lang%[13]!
-  echo:
-  echo Error_Code: "0x6001a2"
-  goto error
+  goto winget
 )
 
 ::Extension for VS Code
@@ -400,21 +358,128 @@ call code --install-extension leonardotrevisan.lang-code-support --force
 echo Done.
 cls
 echo:
-goto open_vs
-
-:open_vs
 echo !%lang%[12]!
 set /p answer=!%lang%[11]! !%lang%[24]!:
-if /i "%answer%" neq "j" goto ok
+if /i "%answer%" neq "y" goto ok
 echo !%lang%[10]!
-timeout /t 2 /nobreak > nul
+%sleep%
 start "" "C:\Users\nikas\AppData\Local\Programs\Microsoft VS Code\Code.exe"
-exit
+@REM goto :eof
 
-:stop
-echo !%lang%[9]!
-pause
-exit
+:w_m_i_c
+if "%log%" == "False" (
+    set "log_A=!rd_Co_f!%log%!dt_Co!"
+) else (
+    set "log_A=!gr_Co_f!%log%!dt_Co!"
+)
+set "line[1]=%gr_Co_f%    :::       :::%rd_Co_f%      :::   :::%bl_Co_f%      :::::::::::%ye_Co_f%    ::::::::  %dt_Co%"
+set "line[2]=%gr_Co_f%   :+:       :+:%rd_Co_f%     :+:+: :+:+:%bl_Co_f%         :+:%ye_Co_f%       :+:    :+:  %dt_Co%" 
+set "line[3]=%gr_Co_f%  +:+       +:+%rd_Co_f%    +:+ +:+:+ +:+%bl_Co_f%        +:+%ye_Co_f%       +:+          %dt_Co%"
+set "line[4]=%gr_Co_f% +#+  +:+  +#+%rd_Co_f%    +#+  +:+  +#+%bl_Co_f%        +#+%ye_Co_f%       +#+           %dt_Co%"
+set "line[5]=%gr_Co_f%+#+ +#+#+ +#+%rd_Co_f%    +#+       +#+%bl_Co_f%        +#+%ye_Co_f%       +#+            %dt_Co%"
+set "line[6]=%gr_Co_f%#+#+# #+#+#%rd_Co_f%     #+#       #+#%bl_Co_f%        #+#%ye_Co_f%       #+#    #+#      %dt_Co%" 
+set "line[7]=%gr_Co_f%###   ###%rd_Co_f%      ###       ###%bl_Co_f%    ###########%ye_Co_f%    ########        %dt_Co%"
+REM Function to display the ASCII art line by line
+:w_m_i_c-ART
+cls
+for /L %%j in (1,1,7) do (
+    echo !line[%%j]!
+    ping -n %delay% 127.0.0.1 > nul
+    REM Check if line 17 is displayed and exit the loop
+    if "%%j"=="7" set "line7Displayed=yes" && goto :CheckLine7
+)
+goto :w_m_i_c-ART
+REM Check if line 17 is displayed and stop the script
+:CheckLine7
+if defined line7Displayed (
+  goto menu
+) else (
+    goto :w_m_i_c-ART
+)
+:menu
+echo.
+echo ============================================
+echo.
+REM Wähle die Option um Windows Parametern zu untersuchen oder sie sich auf Log zu speichern.
+echo !%lang%[46]!
+echo.
+echo ============================================
+echo.
+echo.
+echo %gr_Co_f%[1]%dt_Co% - !%lang%[30]!                                ^|     %gr_Co_f%[9]%dt_Co% - !%lang%[38]!
+echo.
+echo %gr_Co_f%[2]%dt_Co% - !%lang%[31]!                                ^|     %gr_Co_f%[A]%dt_Co% - !%lang%[39]!
+echo.
+echo %gr_Co_f%[3]%dt_Co% - !%lang%[32]!                                ^|     %gr_Co_f%[B]%dt_Co% - !%lang%[40]!
+echo.
+echo %gr_Co_f%[4]%dt_Co% - !%lang%[33]!                                ^|     %gr_Co_f%[C]%dt_Co% - !%lang%[41]!
+echo.
+echo %gr_Co_f%[5]%dt_Co% - !%lang%[34]!                                ^|     %gr_Co_f%[D]%dt_Co% - !%lang%[42]!
+echo.
+echo %gr_Co_f%[6]%dt_Co% - !%lang%[35]!                                ^|     %gr_Co_f%[E]%dt_Co% - !%lang%[43]!
+echo.
+echo %gr_Co_f%[7]%dt_Co% - !%lang%[36]!                                ^|     %gr_Co_f%[F]%dt_Co% - !%lang%[44]!
+echo.
+echo %gr_Co_f%[8]%dt_Co% - !%lang%[37]!                                ^|     %gr_Co_f%[G]%dt_Co% - !%lang%[45]!
+echo.
+echo.
+echo %gr_Co_f%[L]%dt_Co% - Logs (Activated: !log_A!)
+echo:
+
+
+choice /C 123456789ABCDEFGLX /N /M "Take your selection =>"
+set "choice=%errorlevel%"
+if !choice! == 1 (
+    echo Hello World
+) else if !choice! == 2 (
+    echo Hello World
+) else if !choice! == 3 (
+    echo Hello World
+) else if !choice! == 4 (
+    echo Hello World
+) else if !choice! == 5 (
+    echo Hello World
+) else if !choice! == 6 (
+    echo Hello World
+) else if !choice! == 7 (
+    echo Hello World
+) else if !choice! == 8 (
+    echo Hello World
+) else if !choice! == 9 (
+    echo Hello World
+) else if !choice! == 10 (
+    echo Hello World
+) else if !choice! == 11 (
+    echo Hello World
+) else if !choice! == 12 (
+    echo Hello World
+) else if !choice! == 13 (
+    echo Hello World
+) else if !choice! == 14 (
+    echo Hello World
+) else if !choice! == 15 (
+    echo Hello World
+) else if !choice! == 16 (
+    goto welcome
+) else if !choice! == 17 (
+    if "!log!" == "True" (
+        set "log=False"
+    ) else (
+        set "log=True"
+    )
+    cls
+    goto w_m_i_c
+) else if !choice! == 18 (
+    exit /b
+) else (
+    echo Ungültige Eingabe. Bitte eine gültige Option auswählen.
+    pause
+)
+
+:php_in
+
+
+
 
 :ok
 echo OK!!!
@@ -427,64 +492,12 @@ echo !%lang%[22]!
 set /p answer=!%lang%[23]! !%lang%[24]!: 
 if /i "%answer%" neq "j" goto stop
 goto welcome
-
 if errorlevel neq 0 (
   echo !%lang%[25]! %errorlevel%
   pause
 )
 
-
-setlocal enableextensions disabledelayedexpansion
-:drawProgressBar value [text]
-    if "%~1"=="" goto :eof
-    if not defined pb.barArea call :initProgressBar
-    setlocal enableextensions enabledelayedexpansion
-    set /a "pb.value=%~1 %% 101", "pb.filled=pb.value*pb.barArea/100", "pb.dotted=pb.barArea-pb.filled", "pb.pct=1000+pb.value"
-    set "pb.pct=%pb.pct:~-3%"
-    if "%~2"=="" ( set "pb.text=" ) else ( 
-        set "pb.text=%~2%pb.back%" 
-        set "pb.text=!pb.text:~0,%pb.textArea%!"
-    )
-    setlocal enabledelayedexpansion
-    set "output="
-    for /l %%i in (1, 2, %pb.barArea%) do (
-        if %%i LEQ !pb.filled! (
-            set "output=!output!■!"
-        ) else (
-            set "output=!output!□!"
-        )
-    )
-    <nul set /p "pb.prompt=[!output!][ %pb.pct% ] %pb.text%!pb.cr!"
-    endlocal
-    endlocal
-    goto :eof
-
-:initProgressBar [fillChar] [dotChar]
-    if defined pb.cr call :finalizeProgressBar
-    for /f %%a in ('copy "%~f0" nul /z') do set "pb.cr=%%a"
-    if "%~1"=="" ( set "pb.fillChar=#" ) else ( set "pb.fillChar=%~1" )
-    if "%~2"=="" ( set "pb.dotChar=." ) else ( set "pb.dotChar=%~2" )
-    set "pb.console.columns="
-    for /f "tokens=2 skip=4" %%f in ('mode con') do if not defined pb.console.columns set "pb.console.columns=%%f"
-    set /a "pb.barArea=pb.console.columns/2-2", "pb.textArea=pb.barArea-9"
-    setlocal enableextensions enabledelayedexpansion
-    set "pb.fill="
-    for /l %%p in (1 1 %pb.barArea%) do set "pb.fill=!pb.fill!%pb.fillChar%"
-    set "pb.dots=!pb.fill:%pb.fillChar%=%pb.dotChar%!"
-    set "pb.back=!pb.fill:~0,%pb.textArea%!
-    set "pb.back=!pb.back:%pb.fillChar%= !"
-    endlocal & set "pb.fill=%pb.fill%" & set "pb.dots=%pb.dots%" & set "pb.back=%pb.back%"
-    goto :eof
-
-:finalizeProgressBar [erase]
-    if defined pb.cr (
-        if not "%~1"=="" (
-            setlocal enabledelayedexpansion
-            set "pb.back="
-            for /l %%p in (1 1 %pb.console.columns%) do set "pb.back=!pb.back! "
-            <nul set /p "pb.prompt=!pb.cr!!pb.back:~1!!pb.cr!"
-            endlocal
-        )
-    )
-    for /f "tokens=1 delims==" %%v in ('set pb.') do set "%%v="
-    goto :eof
+:stop
+echo !%lang%[9]!
+pause
+exit
